@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <UserSecretsId>4939b53f-ad59-4664-b971-1787d43eb8b2</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="3.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.11" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.CommonTestAssets\CDR.Services.Spreadsheet.CommonTestAssets.csproj" />
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Model.Interfaces\CDR.Services.Spreadsheet.Model.Interfaces.csproj" />
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Model\CDR.Services.Spreadsheet.Model.csproj" />
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Service.Interfaces\CDR.Services.Spreadsheet.Service.Interfaces.csproj" />
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Service\CDR.Services.Spreadsheet.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,14 @@
+{
+   "CDR": {
+    "CDI": {
+      "TemporaryFiles": {
+        "Container": "uploadtemp"
+      }
+	}
+   },
+  "Azure": {
+    "CloudStorage": {
+      "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=cdi;AccountKey=7A94aUzQHdRECHL8nYQUYkV1HUk8OjGDhenjyo6FfQE/pjvr3nT4tHc8itQQty/38+ZMdtKjdQL3FkmD64ZFDw==;EndpointSuffix=core.windows.net"
+    }
+  }
+}

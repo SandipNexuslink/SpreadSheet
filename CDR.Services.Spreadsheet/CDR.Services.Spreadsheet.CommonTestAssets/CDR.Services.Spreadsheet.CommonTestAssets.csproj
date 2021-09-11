@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Model.Interfaces\CDR.Services.Spreadsheet.Model.Interfaces.csproj" />
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Model\CDR.Services.Spreadsheet.Model.csproj" />
+  </ItemGroup>
+
+</Project>

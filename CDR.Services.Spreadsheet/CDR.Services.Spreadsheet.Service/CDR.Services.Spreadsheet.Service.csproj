@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.11" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Model\CDR.Services.Spreadsheet.Model.csproj" />
+    <ProjectReference Include="..\CDR.Services.Spreadsheet.Service.Interfaces\CDR.Services.Spreadsheet.Service.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
