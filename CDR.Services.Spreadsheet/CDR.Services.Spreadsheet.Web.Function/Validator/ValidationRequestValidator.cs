@@ -1,5 +1,4 @@
 ﻿using CDR.Services.Spreadsheet.Model;
-using CDR.Services.Spreadsheet.Model.Interfaces;
 using FluentValidation;
 
 namespace CDR.Services.Spreadsheet.Web.Function.Validator

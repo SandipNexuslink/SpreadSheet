@@ -1,10 +1,7 @@
 using CDR.Services.Spreadsheet.CommonTestAssets;
-using CDR.Services.Spreadsheet.Model;
-using CDR.Services.Spreadsheet.Service;
 using CDR.Services.Spreadsheet.Service.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Net.Http;
 using Xunit;
 

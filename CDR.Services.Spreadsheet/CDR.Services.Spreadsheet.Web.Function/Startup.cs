@@ -33,6 +33,13 @@ namespace CDR.Services.Spreadsheet.Web.Function
             //builder.Services.AddAzureAppConfiguration();
             //builder.Services.AddSingleton(ConfigurationRefresher);
             builder.Services.AddSingleton<IValidationService, ValidationService>();
+            builder.Services.AddSingleton<IMappingService, MappingService>();
+
+
+            builder.Services.AddHttpClient<IReverseMappingService, ReverseMappingService>()
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddPolicyHandler(GetRetryPolicy());
+            builder.Services.AddSingleton<IReverseMappingService, ReverseMappingService>();
 
             builder.Services.AddLogging();
         }

@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CDR.Azure.Storage.Blob.Client" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CDR.Services.Spreadsheet.Model.Interfaces\CDR.Services.Spreadsheet.Model.Interfaces.csproj" />
   </ItemGroup>
 

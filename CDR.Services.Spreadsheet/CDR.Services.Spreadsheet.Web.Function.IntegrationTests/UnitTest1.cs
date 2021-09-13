@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace CDR.Services.Spreadsheet.Web.Function.IntegrationTests

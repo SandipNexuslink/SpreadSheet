@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CDR.Services.Spreadsheet.Model.Interfaces
 {
@@ -12,8 +10,12 @@ namespace CDR.Services.Spreadsheet.Model.Interfaces
         public ValidationRequestOptions Options { get; set; }
         public DateTimeOffset Created { get; set; }
     }
-    public class ValidationRequestOptions
+    public class ValidationRequestOptions : IValidationRequestOptions
     {
         public bool WriteErrorsToBook { get; set; }
+    }
+    public interface IValidationRequestOptions
+    {
+        bool WriteErrorsToBook { get; set; }
     }
 }

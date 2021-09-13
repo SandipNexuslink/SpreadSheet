@@ -9,7 +9,7 @@ namespace CDR.Services.Spreadsheet.Model
         public string BookUnderValidation { get; set; }
         public string ValidatorBook { get; set; }
         public ValidationRequestOptions Options { get; set; }
-        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset Created { get; set; }        
     }
 
 }
