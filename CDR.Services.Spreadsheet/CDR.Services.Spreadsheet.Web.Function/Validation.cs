@@ -17,15 +17,11 @@ namespace CDR.Services.Spreadsheet.Web.Function
 {
     public class Validation
     {
-
-
         private readonly IValidationService _validationService;
-        private ValidationResult _validationResult;
 
-        public Validation(IValidationService validationService, ValidationResult validationResult)
+        public Validation(IValidationService validationService)
         {
             _validationService = validationService;
-            _validationResult = validationResult;
         }
 
         [FunctionName("Validation")]
@@ -39,10 +35,9 @@ namespace CDR.Services.Spreadsheet.Web.Function
                 log.LogInformation($"Invalid request.");
                 return request.ToBadRequest();
             }
-            string responseMessage = string.Empty;
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             IValidationRequest data = JsonConvert.DeserializeObject<ValidationRequest>(requestBody);
-            await _validationService.Validation(data);
+            IValidationResponse responseMessage=await _validationService.Validation(data);
             return new OkObjectResult(responseMessage);
         }
     }
