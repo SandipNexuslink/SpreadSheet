@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace CDR.Services.Spreadsheet.Service.Interfaces
 {
-    public interface IValidationService
+    public interface IMappingService
     {
-        Task<IValidationResponse> Validation(IValidationRequest request);        
+        Task<IMappingResponse> Mapping(IMappingRequest request);
     }
 }

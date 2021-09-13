@@ -1,77 +1,93 @@
-﻿using CDR.Services.Spreadsheet.Model.Interfaces;
+﻿using Azure.Storage.Blobs.Models;
+using CDR.Azure.Storage.Blob.Client;
+using DotLiquid;
 using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CDR.Services.Spreadsheet.Service.Helper
 {
-    public class SheetHelper
+    public class SheetHelper : IDisposable
     {
-        public async Task<ExcelPackage> GetSheet(CloudBlobClient blobClient, string temporaryContainer, string FilePath)
+        private readonly IConfiguration _config;
+        private readonly IAzureBlobStorageClient _blobClient;
+        public SheetHelper(IConfiguration config, IAzureBlobStorageClient azureBlobStorageClient)
         {
-            CloudBlobContainer container = blobClient.GetContainerReference(temporaryContainer);
-            CloudBlockBlob Blob = container.GetBlockBlobReference(FilePath);
-            var buvStream = new MemoryStream();
-            await Blob.DownloadToStreamAsync(buvStream);
-            ExcelPackage Package = new ExcelPackage(buvStream);
-            return Package;
+            _config = config;
+            _blobClient = azureBlobStorageClient;
         }
+        private string Container { get { return _config["CDR:CDI:TemporaryFiles:Container"]; } }
+        private string ValidatorBookName { get { return _config["ExcelProperties:ValidatorBookName"]; } }
 
-        public ExcelPackage MergeSheets(ExcelPackage Buv, ExcelPackage Vb)
+        public async Task<ExcelPackage> GetSheet(string FilePath)
         {
-            foreach (var sheet in Vb.Workbook.Worksheets)
+            try
             {
-                string workSheetName = sheet.Name;
-                //check name of worksheet, in case that worksheet with same name already exist exception will be thrown by EPPlus
-                foreach (var masterSheet in Buv.Workbook.Worksheets)
-                {
-                    if (sheet.Name == masterSheet.Name)
-                    {
-                        workSheetName = string.Format("{0}_{1}", workSheetName, DateTime.Now.ToString("yyyyMMddhhssmmm"));
-                    }
-                }
-                //add new sheet
-                Buv.Workbook.Worksheets.Add(workSheetName, sheet);
+                Stream stream = await _blobClient.Get(Container, FilePath);
+                ExcelPackage Package = new ExcelPackage(stream);
+                return Package;
             }
-            Buv.Save();
-            return Buv;
-        }
-
-        public ExcelPackage ClearCommentsAndStyle(ExcelPackage masterPackage)
-        {
-            using (masterPackage)
+            catch (Exception ex)
             {
-                if (masterPackage.Workbook.Worksheets.Count > 0)
-                {
-                    var sheets = masterPackage.Workbook.Worksheets;
-                    foreach (var sheet in sheets)
-                    {
-                        var workSheet = masterPackage.Workbook.Worksheets[sheet.Name];
-                        var comments = workSheet.Comments.Cast<ExcelComment>().Where(c => c.Text.ToLower().StartsWith("V:")).ToList();
-                        if (comments.Count > 0)
-                        {
-                            foreach (ExcelComment cell in comments)
-                            {
-                                workSheet.Comments.Remove(workSheet.Cells[cell.Address].Comment);
-                                workSheet.Cells[cell.Address].Style.Fill.PatternType = ExcelFillStyle.None;
-                            }
-                        }
-                    }
-                }
+                throw ex;
             }
-
-            return masterPackage;
         }
 
+        public async Task<Stream> GetStream(string FilePath)
+        {
+            return await _blobClient.Get(Container, FilePath);
+        }
+
+        public async Task<string> GetTemplateContent(string templateFilePath)
+        {
+            using (Stream templateStream = await GetStream(templateFilePath))
+            {
+                var streamReader = new StreamReader(templateStream);
+                return await streamReader.ReadToEndAsync();
+            }
+        }
+
+        public async Task<string> GetRenderedTemplate(string templateFilePath, string jsonPayload)
+        {
+            string templateContent = await GetTemplateContent(templateFilePath);
+            Template template = Template.Parse(templateContent);
+
+            dynamic expandoObj = JsonConvert.DeserializeObject<ExpandoObject>(jsonPayload, new ExpandoObjectConverter());
+            IDictionary<string, object> expandoDict = new Dictionary<string, object>(expandoObj);
+            return template.Render(Hash.FromDictionary(expandoDict));
+        }
+
+        public async Task UpsertSheet(string FilePath, ExcelPackage package)
+        {
+            BlobProperties blobProperties = await GetBlobProperties(FilePath); // FOR COLLECTING MIME TYPE OF AZURE BLOB
+            package.Stream.Position = 0; // SETTING UP CONTENT POSITION TO 0
+            await _blobClient.Upsert(Container, FilePath, package.Stream, blobProperties.ContentType);
+        }
+
+        public async Task<BlobProperties> GetBlobProperties(string FilePath)
+        {
+            return await _blobClient.GetBlobProperties(Container, FilePath);
+        }
+
+        //SerializeObject pass in parameter
+        public string RenderWithLiquidTemplate(string templateContent, string jsonObj)
+        {
+            Template template = Template.Parse(templateContent);
+            dynamic expandoObj = JsonConvert.DeserializeObject<ExpandoObject>(jsonObj, new ExpandoObjectConverter());
+            IDictionary<string, object> expandoDict = new Dictionary<string, object>(expandoObj);
+            return template.Render(Hash.FromDictionary(expandoDict));
+        }
+        public void Dispose()
+        {
+            this.Dispose();
+        }
     }
 }
