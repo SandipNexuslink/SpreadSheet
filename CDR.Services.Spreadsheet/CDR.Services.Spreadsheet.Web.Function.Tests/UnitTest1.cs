@@ -20,16 +20,11 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
 
         protected static IConfiguration config = __config ??= TestConfiguration.GetConfiguration();
 
-        private static HttpClient __httpClient;
-
         private static IAzureBlobStorageClient _blobClient;
 
         protected static IAzureBlobStorageClient blobClient = _blobClient ??= new AzureBlobStorageClient(config);
 
-        protected static HttpClient httpClient = __httpClient ??= new HttpClient();
-
         private static readonly ILogger<IValidationService> logger = TestFactory.CreateLogger<IValidationService>();
-        private ValidationResult _validationResult;
 
         #region Validation
 
@@ -37,7 +32,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         {
             await TestConfiguration.RefreshConfiguration();
             var httpRequest = FunctionTestFactory.CreateHttpPostRequest(request);
-            var service = new ValidationService(config, httpClient);
+            var service = new ValidationService(config, blobClient);
             var function = new Validation(service);
             var httpResponse = await function.Run(httpRequest, logger);
             return httpResponse;
