@@ -27,7 +27,8 @@ namespace CDR.Services.Spreadsheet.Web.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "reverse-mapping-request")] HttpRequest req,
             ILogger log)
         {
-            if (req.ContentLength == 0)
+            // Empty body >> req.ContentLength == 0 from Request || req.Body.Length == 4 from Test cases
+            if (req.ContentLength == 0 || req.Body.Length == 4)
             {
                 log.LogInformation("Invalid request >> Empty Body");
                 return new BadRequestObjectResult("Bad Request");

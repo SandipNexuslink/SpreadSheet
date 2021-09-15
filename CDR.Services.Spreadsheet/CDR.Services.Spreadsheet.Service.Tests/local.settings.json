@@ -13,7 +13,6 @@
   },
   "ExcelProperties": {
     "ValidatorBookName": "Validator Book",
-    "CommentPrefix": "V:",
-    "CommentAuther": "Admin"
+    "CommentPrefix": "V:"
   }
 }

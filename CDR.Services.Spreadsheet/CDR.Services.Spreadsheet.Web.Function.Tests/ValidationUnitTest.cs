@@ -6,15 +6,12 @@ using CDR.Services.Spreadsheet.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace CDR.Services.Spreadsheet.Web.Function.Tests
 {
-    public class UnitTest1
+    public class ValidationUnitTest
     {
         private static IConfiguration __config;
 
