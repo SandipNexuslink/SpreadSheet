@@ -37,6 +37,11 @@ namespace CDR.Services.Spreadsheet.Service
 
         public async Task<IValidationResponse> Validation(IValidationRequest req)
         {
+            if (string.IsNullOrEmpty(req.BookUnderValidation))
+            {
+                return new ValidationResponse();
+            }
+
             var response = new ValidationResponse
             {
                 id = Guid.NewGuid().ToString(),

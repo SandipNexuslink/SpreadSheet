@@ -27,9 +27,12 @@ namespace CDR.Services.Spreadsheet.Web.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "validation-request")] HttpRequest req,
             ILogger log)
         {
-            try
+            if (req.ContentLength == 0 || req.Body.Length == 4)
             {
-                var request = await req.GetJsonBody<ValidationRequest, ValidationRequestValidator>();
+                log.LogInformation("Invalid request >> Empty Body");
+                return new BadRequestObjectResult("Bad Request");
+            }
+            var request = await req.GetJsonBody<ValidationRequest, ValidationRequestValidator>();
                 if (!request.IsValid)
                 {
                     log.LogInformation($"Invalid request.");
@@ -39,12 +42,6 @@ namespace CDR.Services.Spreadsheet.Web.Function
                 IValidationRequest data = JsonConvert.DeserializeObject<ValidationRequest>(requestBody);
                 IValidationResponse responseMessage = await _validationService.Validation(data);
                 return new OkObjectResult(responseMessage);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-           
         }
     }
 }

@@ -25,6 +25,11 @@ namespace CDR.Services.Spreadsheet.Web.Function
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "mapping-request")] HttpRequest req,
             ILogger log)
         {
+            if (req.ContentLength == 0 || req.Body.Length == 4)
+            {
+                log.LogInformation("Invalid request >> Empty Body");
+                return new BadRequestObjectResult("Bad Request");
+            }
             var request = await req.GetJsonBody<MappingRequest, MappingRequestValidator>();
             if (!request.IsValid)
             {
@@ -33,7 +38,7 @@ namespace CDR.Services.Spreadsheet.Web.Function
             }
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             IMappingRequest data = JsonConvert.DeserializeObject<MappingRequest>(requestBody);
-            var responseMessage = await _mappingService.Mapping(data);
+            IMappingResponse responseMessage = await _mappingService.Mapping(data);
             return new OkObjectResult(responseMessage);
         }
     }

@@ -18,37 +18,42 @@ namespace CDR.Services.Spreadsheet.Service
         private readonly IConfiguration _config;
         private readonly IAzureBlobStorageClient _blobClient;
         //private static readonly CultureInfo culture = new CultureInfo("en-GB");
-
+        #region Private Variables
+        private string _container;
+        private SheetHelper _sheethelper;
+        #endregion
 
         public MappingService(IConfiguration config, IAzureBlobStorageClient azureBlobStorageClient)
         {
             _config = config;
             _blobClient = azureBlobStorageClient;
+
+            #region Setting Private Variables
+            _container = config["CDR:CDI:TemporaryFiles:Container"];
+            _sheethelper = new SheetHelper(_config, _blobClient);
+            #endregion
         }
 
         public async Task<IMappingResponse> Mapping(IMappingRequest req)
         {
-            using (var helper = new SheetHelper(_config, _blobClient))
-            {
-                var Container = _config["CDR:CDI:TemporaryFiles:Container"];
-                var response = new MappingResponse();
-                /*Setting up blob storage starts*/
 
-                response.BookToMap = req.BookToMap.Remove(0, Container.Length + 1);
-                response.Template = req.Template.Remove(0, Container.Length + 1);
-                var buvPackage = await helper.GetSheet(response.BookToMap);
+            var Container = _config["CDR:CDI:TemporaryFiles:Container"];
+            var response = new MappingResponse();
+            /*Setting up blob storage starts*/
 
-                Stream stream = await helper.GetStream(response.BookToMap);
-                var excelDataset = await ReadExcelAsync(stream);
-                string json = JsonConvert.SerializeObject(excelDataset, Formatting.Indented);
-                string templateContent = await helper.GetTemplateContent(response.Template);
-                response.Payload = helper.RenderWithLiquidTemplate(templateContent, json);
-                response.Id = Guid.NewGuid();
-                response.Created = DateTimeOffset.Now;
-                return response;
-            }
+            response.BookToMap = req.BookToMap.Remove(0, Container.Length + 1);
+            response.Template = req.Template.Remove(0, Container.Length + 1);
+            var buvPackage = await _sheethelper.GetSheet(response.BookToMap);
+
+            Stream stream = await _sheethelper.GetStream(response.BookToMap);
+            var excelDataset = await ReadExcelAsync(stream);
+            string json = JsonConvert.SerializeObject(excelDataset, Formatting.Indented);
+            string templateContent = await _sheethelper.GetTemplateContent(response.Template);
+            response.Payload = _sheethelper.RenderWithLiquidTemplate(templateContent, json);
+            response.Id = Guid.NewGuid();
+            response.Created = DateTimeOffset.Now;
+            return response;
         }
-
 
         private Task<DataSet> ReadExcelAsync(Stream stream)
         {
@@ -72,8 +77,5 @@ namespace CDR.Services.Spreadsheet.Service
                 // The result of each spreadsheet is in result.Tables
             }
         }
-
-
-
     }
 }

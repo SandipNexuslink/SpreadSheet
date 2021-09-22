@@ -22,6 +22,7 @@ namespace CDR.Services.Spreadsheet.CommonTestAssets
         }
 
         #region Valid Requests
+
         #region Upsert will work on BookToMap
         public static IReverseMappingRequest CreateFirstValidReverseMappingRequestWithoutBookToPersist()
         {
@@ -82,6 +83,7 @@ namespace CDR.Services.Spreadsheet.CommonTestAssets
             return request;
         }
         #endregion
+
         #endregion
 
         #region Invalid Requests

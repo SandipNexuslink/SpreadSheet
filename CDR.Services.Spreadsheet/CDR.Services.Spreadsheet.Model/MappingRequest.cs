@@ -9,6 +9,6 @@ namespace CDR.Services.Spreadsheet.Model
         public string Id { get; set; }
         public string BookToMap { get; set; }
         public string Template { get; set; }
-        public IMappingRequestOptions Options { get; set; }
+        public MappingRequestOptions Options { get; set; }
     }
 }

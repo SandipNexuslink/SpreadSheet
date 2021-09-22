@@ -21,7 +21,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
 
         protected static IAzureBlobStorageClient blobClient = _blobClient ??= new AzureBlobStorageClient(config);
 
-        private static readonly ILogger<IValidationService> logger = TestFactory.CreateLogger<IValidationService>();
+        private static readonly ILogger<IValidationService> logger = ValidationTestFactory.CreateLogger<IValidationService>();
 
         #region Validation
 
@@ -38,7 +38,15 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void Invalid_Validation_Request_Returns_BadRequest()
         {
-            var request = TestFactory.CreateInvalidValidationRequest();
+            var request = ValidationTestFactory.CreateInvalidEntireValidationRequest();
+            var response = (BadRequestObjectResult)await _runValidationTest(request);
+            Assert.Equal(400, response.StatusCode);
+        }
+
+        [Fact]
+        public async void Invalid_Empty_Validation_Request_Returns_BadRequest()
+        {
+            var request = ValidationTestFactory.CreateEmptyValidationRequest();
             var response = (BadRequestObjectResult)await _runValidationTest(request);
             Assert.Equal(400, response.StatusCode);
         }
@@ -46,7 +54,15 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void InValid_NullBookUnder_Validation__Request_Returns_InValid_RM_Response()
         {
-            var request = TestFactory.CreateSecondValidationRequest(true);
+            var request = ValidationTestFactory.CreateInvalidBookUnderValidationRequest(true);
+            var response = (BadRequestObjectResult)await _runValidationTest(request);
+            Assert.Equal(400, response.StatusCode);
+        }
+
+        [Fact]
+        public async void InValid_Id_Validation_Request_Returns_InValid_Validation_Response()
+        {
+            var request = ValidationTestFactory.CreateInvalidIdValidationRequest();
             var response = (BadRequestObjectResult)await _runValidationTest(request);
             Assert.Equal(400, response.StatusCode);
         }
@@ -54,7 +70,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void Valid_Validation_Request_Returns_Valid_Validation_Response()
         {
-            var request = TestFactory.CreateValidValidationRequest();
+            var request = ValidationTestFactory.CreateValidValidationRequest();
             var response = (OkObjectResult)await _runValidationTest(request);
             Assert.Equal(200, response.StatusCode);
             var result = response.Value as IValidationResponse;
@@ -65,7 +81,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void InValid_EmptyBookUnder_Validation__Request_Returns_InValid_RM_Response()
         {
-            var request = TestFactory.CreateSecondValidationRequest(false);
+            var request = ValidationTestFactory.CreateInvalidBookUnderValidationRequest(false);
             var response = (BadRequestObjectResult)await _runValidationTest(request);
             Assert.Equal(400, response.StatusCode);
         }
@@ -73,7 +89,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void InValid_EmptyValidatorBook_Validation__Request_Returns_InValid_RM_Response()
         {
-            var request = TestFactory.CreateValidatorBookValidationRequest(false);
+            var request = ValidationTestFactory.CreateValidatorBookValidationRequest(false);
             var response = (BadRequestObjectResult)await _runValidationTest(request);
             Assert.Equal(400, response.StatusCode);
         }
@@ -81,7 +97,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void InValid_NullValidatorBook_Validation__Request_Returns_InValid_RM_Response()
         {
-            var request = TestFactory.CreateValidatorBookValidationRequest(true);
+            var request = ValidationTestFactory.CreateValidatorBookValidationRequest(true);
             var response = (BadRequestObjectResult)await _runValidationTest(request);
             Assert.Equal(400, response.StatusCode);
         }
@@ -89,7 +105,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void Valid_Validation_Request_Returns_TRUE_WriteErrorsToBook_Value()
         {
-            var request = TestFactory.CreateWriteErrorsToBookValidationRequest(true);
+            var request = ValidationTestFactory.CreateWriteErrorsToBookValidationRequest(true);
             var response = (OkObjectResult)await _runValidationTest(request);
             Assert.Equal(200, response.StatusCode);
             var result = response.Value as IValidationResponse;
@@ -99,7 +115,7 @@ namespace CDR.Services.Spreadsheet.Web.Function.Tests
         [Fact]
         public async void Valid_Validation_Request_Returns_FALSE_WriteErrorsToBook_Value()
         {
-            var request = TestFactory.CreateWriteErrorsToBookValidationRequest(false);
+            var request = ValidationTestFactory.CreateWriteErrorsToBookValidationRequest(false);
             var response = (OkObjectResult)await _runValidationTest(request);
             Assert.Equal(200, response.StatusCode);
             var result = response.Value as IValidationResponse;
